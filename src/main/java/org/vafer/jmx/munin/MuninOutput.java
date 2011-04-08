@@ -1,6 +1,9 @@
 package org.vafer.jmx.munin;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
 
 import javax.management.ObjectName;
 
@@ -16,16 +19,48 @@ public final class MuninOutput implements Output {
         this.enums = enums;
     }
 
-    private String fieldname(String s) {
+    public static String attributeName(ObjectName bean, String attribute) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(fieldname(beanString(bean)));
+        sb.append('_');
+        sb.append(fieldname(attribute));
+        return sb.toString();        
+    }
+    
+    private static String fieldname(String s) {
         return s.replaceAll("[^A-Za-z0-9]", "_");
     }
 
-    private String beanString(ObjectName beanName) {
+    private static String beanString(ObjectName beanName) {
         StringBuilder sb = new StringBuilder();
         sb.append(beanName.getDomain());
-        sb.append('.');
-        sb.append(beanName.getKeyProperty("type"));
+
+        Hashtable<String, String> properties = beanName.getKeyPropertyList();
+
+        String keyspace = "keyspace";
+        if (properties.containsKey(keyspace)) {
+            sb.append('.');
+            sb.append(properties.get(keyspace));
+            properties.remove(keyspace);
+        }
+
+        String type = "type";
+        if (properties.containsKey(type)) {
+            sb.append('.');
+            sb.append(properties.get(type));
+            properties.remove(type);
+        }
+
+        ArrayList<String> keys = new ArrayList(properties.keySet());
+        Collections.sort(keys);
+        
+        for(String key : keys) {
+            sb.append('.');
+            sb.append(properties.get(key));
+        }
+        
         return sb.toString();
+        // return beanName.getCanonicalName();
     }
     
     public void output(ObjectName beanName, String attributeName, Object value) {
@@ -50,13 +85,7 @@ public final class MuninOutput implements Output {
                     v = f.format(value);            
                 }
                 
-                StringBuilder sb = new StringBuilder();
-                sb.append(fieldname(beanString(beanName)));
-                sb.append('_');
-                sb.append(fieldname(attributeName));
-                sb.append(".value ");
-                sb.append(v);
-                System.out.println(sb);
+                System.out.println(attributeName(beanName, attributeName) + ".value " + v);
             }
         });        
    }

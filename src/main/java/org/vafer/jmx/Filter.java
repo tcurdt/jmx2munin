@@ -1,7 +1,9 @@
 package org.vafer.jmx;
 
+import javax.management.ObjectName;
+
 public interface Filter {
 
-    public boolean include(String bean, String attribute);
+    public boolean include(ObjectName bean, String attribute);
 
 }

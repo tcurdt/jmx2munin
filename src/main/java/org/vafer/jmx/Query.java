@@ -31,7 +31,7 @@ public final class Query {
             final MBeanAttributeInfo[] attributes = mbeanInfo.getAttributes();
             for (final MBeanAttributeInfo attribute : attributes) {
                 if (attribute.isReadable()) {
-                    if (filter.include(mbeanName.getCanonicalName(), attribute.getName())) {
+                    if (filter.include(mbeanName, attribute.getName())) {
                         final String attributeName = attribute.getName();
                         try {
                             output.output(
