@@ -27,15 +27,15 @@ public final class Munin {
     @Parameter(names = "-enums", description = "file string to enum config")
     private String enumsPath;
 
-    @Parameter(names = "-attribute", description = "attribute to return")
+    @Parameter(names = "-attribute", description = "attributes to return")
     private List<String> attributes = new ArrayList<String>();
 
     private void run() throws Exception {
         final Filter filter;
-        if (attributes != null) {
-            filter = new MuninAttributesFilter(attributes);
-        } else {
+        if (attributes == null || attributes.isEmpty()) {
             filter = new NoFilter();
+        } else {
+            filter = new MuninAttributesFilter(attributes);
         }
 
         final Enums enums = new Enums();

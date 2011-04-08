@@ -4,6 +4,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Locale;
 
 import javax.management.ObjectName;
 
@@ -24,7 +25,7 @@ public final class MuninOutput implements Output {
         sb.append(fieldname(beanString(bean)));
         sb.append('_');
         sb.append(fieldname(attribute));
-        return sb.toString();        
+        return sb.toString().toLowerCase(Locale.US);        
     }
     
     private static String fieldname(String s) {

@@ -9,10 +9,12 @@ import org.vafer.jmx.Filter;
 
 public final class MuninAttributesFilter implements Filter {
 
-    private final HashSet<String> attributes;
+    private final HashSet<String> attributes = new HashSet<String>();
 
     public MuninAttributesFilter(List<String> pAttributes) {
-        attributes = new HashSet<String>(pAttributes);
+        for (String attribute : pAttributes) {
+            attributes.add(attribute.trim().replaceAll("_size$", ""));
+        }
     }
 
     public boolean include(ObjectName bean, String attribute) {

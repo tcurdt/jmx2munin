@@ -1,11 +1,7 @@
 #!/bin/bash
-# [cassandra_nodes]
-# env.config = cassandra/nodes_in_cluster
-# env.query = org.apache.cassandra.*:*
-
-MUNIN_LIBDIR=/Users/tcurdt/Projects
-config="nodes_in_cluster"
-query="org.apache.cassandra.*:*"
+# [cassandra_nodes_in_cluster]
+# env.config cassandra/nodes_in_cluster
+# env.query org.apache.cassandra.*:*
 
 if [ -z "$MUNIN_LIBDIR" ]; then
     MUNIN_LIBDIR="`dirname $(dirname "$0")`"
@@ -30,7 +26,7 @@ if [ -z "$config" -o -z "$query" -o -z "$url" ]; then
   exit 1
 fi
 
-JMX2MUNIN_DIR="$MUNIN_LIBDIR/jmx2munin"
+JMX2MUNIN_DIR="$MUNIN_LIBDIR/plugins"
 CONFIG="$JMX2MUNIN_DIR/jmx2munin.cfg/$config"
 
 if [ "$1" = "config" ]; then
@@ -41,11 +37,17 @@ fi
 JAR="$JMX2MUNIN_DIR/jmx2munin.jar"
 CACHED="/tmp/jmx2munin"
 
-if test `find "$CACHED" -mmin +2`; then
+if test ! -f $CACHED || test `find "$CACHED" -mmin +2`; then
+
+    ATTRIBUTES=`awk '/\.label/ { gsub(/\.label/,""); printf "-attribute %s ", $1 }' $CONFIG`
+
     java -jar "$JAR" \
       -url "$url" \
       -query "$query" \
+      $ATTRIBUTES \
       > $CACHED
+
+    echo "cached.value `date +%s`" >> $CACHED
 fi
 
 cat $CACHED
