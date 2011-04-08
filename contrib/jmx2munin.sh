@@ -39,8 +39,6 @@ CACHED="/tmp/jmx2munin"
 
 if test ! -f $CACHED || test `find "$CACHED" -mmin +2`; then
 
-    ATTRIBUTES=`awk '/\.label/ { gsub(/\.label/,""); printf "-attribute %s ", $1 }' $CONFIG`
-
     java -jar "$JAR" \
       -url "$url" \
       -query "$query" \
@@ -50,4 +48,9 @@ if test ! -f $CACHED || test `find "$CACHED" -mmin +2`; then
     echo "cached.value `date +%s`" >> $CACHED
 fi
 
-cat $CACHED
+ATTRIBUTES=`awk '/\.label/ { gsub(/\.label/,""); print $1 }' $CONFIG`
+
+# big room for improvement here
+for ATTRIBUTE in $ATTRIBUTES; do
+  grep $ATTRIBUTE $CACHED
+done
