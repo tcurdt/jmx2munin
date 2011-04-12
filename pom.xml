@@ -5,7 +5,7 @@
     <groupId>org.vafer</groupId>
     <artifactId>jmx2munin</artifactId>
     <name>jmx2munin</name>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <description>
     </description>
     <url>http://github.com/tcurdt/jmx2munin</url>
