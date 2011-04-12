@@ -21,7 +21,7 @@ public final class Munin {
     @Parameter(names = "-url", description = "jmx url", required = true)
     private String url;
 
-    @Parameter(names = "-query", description = "query expression")
+    @Parameter(names = "-query", description = "query expression", required = true)
     private String query;
 
     @Parameter(names = "-enums", description = "file string to enum config")

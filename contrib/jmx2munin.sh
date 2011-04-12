@@ -50,7 +50,6 @@ fi
 
 ATTRIBUTES=`awk '/\.label/ { gsub(/\.label/,""); print $1 }' $CONFIG`
 
-# big room for improvement here
 for ATTRIBUTE in $ATTRIBUTES; do
   grep $ATTRIBUTE $CACHED
 done
