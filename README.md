@@ -12,13 +12,13 @@ Some of it's features:
 This is what the Munin script will call. So you should test this first. Of course with your parameters. This example expose all Cassandra information to Munin.
 
     java -jar jmx2munin.jar \
-         -url service:jmx:rmi:///jndi/rmi://localhost:8080/jmxrmi \
+         -url service:jmx:rmi:///jndi/rmi://localhost:7199/jmxrmi \
          -query "org.apache.cassandra.*:*"
 
 The "url" parameters specifies the JMX URL, the query selects the MBeans (and optionally also the attributes) to expose.
 
     java -jar jmx2munin.jar \
-         -url service:jmx:rmi:///jndi/rmi://localhost:8080/jmxrmi \
+         -url service:jmx:rmi:///jndi/rmi://localhost:7199/jmxrmi \
          -query "org.apache.cassandra.*:*" \
          -attribute org_apache_cassandra_db_storageservice_livenodes_size
 
@@ -30,6 +30,7 @@ The script that does the actual interaction with munin you can find in the contr
 In the plugin conf you point to the correct configuration
 
     [cassandra_*]
+    env.url service:jmx:rmi:///jndi/rmi://127.0.0.1:7199/jmxrmi
     env.query org.apache.cassandra.*:*
 
     [cassandra_nodes_in_cluster]
@@ -41,14 +42,19 @@ A possible configuration could look like this
     graph_vlabel org_apache_cassandra_db_storageservice_livenodes_size
     org_apache_cassandra_db_storageservice_livenodes_size.label number of nodes
 
-The script will extract the attributes from the config and caches the JMX results to reduce the load when showing many values.
+The script will extract the attributes from the config and caches the JMX results to reduce the load when showing many values. For testing you can run it manually just like munin would.
+
+    MUNIN_LIBDIR='/usr/share/munin'
+    config='cassandra/nodes_in_cluster'
+    query='org.apache.cassandra.*:*'
+    /usr/share/munin/plugins/jmx2munin.sh
 
 # More advanced
 
 Sometimes it can be useful to track String values by mapping them into an enum as they really describe states. To find this possible candidates you can call:
 
     java -jar jmx2munin.jar \
-         -url service:jmx:rmi:///jndi/rmi://localhost:8080/jmxrmi \
+         -url service:jmx:rmi:///jndi/rmi://localhost:7199/jmxrmi \
          -query "org.apache.cassandra.*:*" \
          list
 
@@ -67,7 +73,7 @@ It should output a list of possible candidates. This can now be turned into a en
 Which you then can provide:
 
     java -jar jmx2munin.jar \
-         -url service:jmx:rmi:///jndi/rmi://localhost:8080/jmxrmi \
+         -url service:jmx:rmi:///jndi/rmi://localhost:7199/jmxrmi \
          -query "org.apache.cassandra.*:*" \
          -enums /path/to/enums.cfg
 

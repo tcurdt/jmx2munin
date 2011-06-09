@@ -1,7 +1,9 @@
 #!/bin/bash
 # [cassandra_nodes_in_cluster]
-# env.config cassandra/nodes_in_cluster
+# env.url service:jmx:rmi:///jndi/rmi://127.0.0.1:7199/jmxrmi
 # env.query org.apache.cassandra.*:*
+# env.config cassandra/nodes_in_cluster
+# sets the 'config' and 'query' and 'url' variables for this script
 
 if [ -z "$MUNIN_LIBDIR" ]; then
     MUNIN_LIBDIR="`dirname $(dirname "$0")`"
@@ -18,7 +20,7 @@ fi
 
 if [ -z "$url" ]; then
   # this is very common so make it a default
-  url="service:jmx:rmi:///jndi/rmi://127.0.0.1:8080/jmxrmi"
+  url="service:jmx:rmi:///jndi/rmi://127.0.0.1:7199/jmxrmi"
 fi
 
 if [ -z "$config" -o -z "$query" -o -z "$url" ]; then
@@ -50,6 +52,13 @@ fi
 
 ATTRIBUTES=`awk '/\.label/ { gsub(/\.label/,""); print $1 }' $CONFIG`
 
+if [ -z "$ATTRIBUTES" ]; then
+  echo "Could not find any *.label lines in $CONFIG"
+  exit 1
+fi
+
 for ATTRIBUTE in $ATTRIBUTES; do
   grep $ATTRIBUTE $CACHED
 done
+
+exit 0
