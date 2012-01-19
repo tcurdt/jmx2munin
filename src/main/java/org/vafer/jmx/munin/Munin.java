@@ -4,25 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.vafer.jmx.Enums;
-import org.vafer.jmx.Filter;
-import org.vafer.jmx.ListOutput;
-import org.vafer.jmx.NoFilter;
-import org.vafer.jmx.Query;
+import org.vafer.jmx.*;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
 public final class Munin {
 
-    @Parameter(description = "")
-    private List<String> args = new ArrayList<String>();
-    
+    @Parameter(names = "-list", description = "show as list")
+    private boolean list;
+
     @Parameter(names = "-url", description = "jmx url", required = true)
     private String url;
 
     @Parameter(names = "-query", description = "query expression", required = true)
-    private String query;
+    private List<String> queries = new ArrayList<String>();
 
     @Parameter(names = "-enums", description = "file string to enum config")
     private String enumsPath;
@@ -42,21 +38,25 @@ public final class Munin {
         if (enumsPath != null) {
             enums.load(enumsPath);
         }
-        
-        final String cmd = args.toString().toLowerCase(Locale.US);
-        if ("[list]".equals(cmd)) {
-            new Query().run(url, query, filter, new ListOutput());
+
+        final Output output;
+        if (list) {
+            output = new ListOutput();
         } else {
-            new Query().run(url, query, filter, new MuninOutput(enums));
+            output = new MuninOutput(enums);
+        }
+
+        for(String query : queries) {
+            new Query().run(url, query, filter, output);
         }
     }
 
     public static void main(String[] args) throws Exception {
         Munin m = new Munin();
-        
+
         JCommander cli = new JCommander(m);
         try {
-            cli.parse(args);            
+            cli.parse(args);
         } catch(Exception e) {
             cli.usage();
             System.exit(1);

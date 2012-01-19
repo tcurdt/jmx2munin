@@ -56,7 +56,7 @@ Sometimes it can be useful to track String values by mapping them into an enum a
     java -jar jmx2munin.jar \
          -url service:jmx:rmi:///jndi/rmi://localhost:7199/jmxrmi \
          -query "org.apache.cassandra.*:*" \
-         list
+         -list
 
 It should output a list of possible candidates. This can now be turned into a enum configuration file:
 

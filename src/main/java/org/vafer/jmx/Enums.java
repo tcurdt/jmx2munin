@@ -14,7 +14,7 @@ import javax.management.ObjectName;
 public final class Enums {
 
     private TreeMap<String, LinkedHashMap<Integer, Pattern>> sections = new TreeMap<String, LinkedHashMap<Integer, Pattern>>();
-    
+
     public boolean load(String filePath) throws IOException {
         BufferedReader input = null;
         LinkedHashMap<Integer, Pattern> section = new LinkedHashMap<Integer, Pattern>();
@@ -46,7 +46,7 @@ public final class Enums {
             }
         } finally {
             if (input != null) {
-                input.close();      
+                input.close();
             }
         }
         return false;
@@ -59,9 +59,9 @@ public final class Enums {
         sb.append(beanName.getKeyProperty("type"));
         sb.append(':');
         sb.append(attributeName);
-        return sb.toString();        
+        return sb.toString();
     }
-    
+
     public Number resolve(String id, String value) {
         LinkedHashMap<Integer, Pattern> section = sections.get(id);
         if (section == null) {
@@ -71,7 +71,7 @@ public final class Enums {
             if (entry.getValue().matcher(value).matches()) {
                 return entry.getKey();
             }
-        }        
+        }
         return null;
     }
 }

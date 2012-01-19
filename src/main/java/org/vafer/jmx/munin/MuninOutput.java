@@ -25,11 +25,11 @@ public final class MuninOutput implements Output {
         sb.append(fieldname(beanString(bean)));
         sb.append('_');
         sb.append(fieldname(attribute));
-        return sb.toString().toLowerCase(Locale.US);        
+        return sb.toString().toLowerCase(Locale.US);
     }
-    
+
     private static String fieldname(String s) {
-        return s.replaceAll("[^A-Za-z0-9]", "_");
+        return s.replaceAll("[^A-Za-z0-9]", "_").replaceAll("_+", "_").replaceAll("_$", "");
     }
 
     private static String beanString(ObjectName beanName) {
@@ -54,16 +54,16 @@ public final class MuninOutput implements Output {
 
         ArrayList<String> keys = new ArrayList(properties.keySet());
         Collections.sort(keys);
-        
+
         for(String key : keys) {
             sb.append('.');
             sb.append(properties.get(key));
         }
-        
+
         return sb.toString();
         // return beanName.getCanonicalName();
     }
-    
+
     public void output(ObjectName beanName, String attributeName, Object value) {
         Value.flatten(beanName, attributeName, value, new Value.Listener() {
             public void value(ObjectName beanName, String attributeName, String value) {
@@ -71,7 +71,7 @@ public final class MuninOutput implements Output {
                 if (v != null) {
                     value(beanName, attributeName, v);
                 } else {
-                    value(beanName, attributeName, Double.NaN);                    
+                    value(beanName, attributeName, Double.NaN);
                 }
             }
             public void value(ObjectName beanName, String attributeName, Number value) {
@@ -83,11 +83,11 @@ public final class MuninOutput implements Output {
                     final NumberFormat f = NumberFormat.getInstance();
                     f.setMaximumFractionDigits(2);
                     f.setGroupingUsed(false);
-                    v = f.format(value);            
+                    v = f.format(value);
                 }
-                
+
                 System.out.println(attributeName(beanName, attributeName) + ".value " + v);
             }
-        });        
+        });
    }
 }
