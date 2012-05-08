@@ -37,7 +37,8 @@ if [ "$1" = "config" ]; then
 fi
 
 JAR="$JMX2MUNIN_DIR/jmx2munin.jar"
-CACHED="/tmp/jmx2munin"
+URLSUM=`echo -n "$url" | cksum | cut -d ' ' -f 1`
+CACHED="/tmp/jmx2munin.$URLSUM"
 
 if test ! -f $CACHED || test `find "$CACHED" -mmin +2`; then
 
@@ -58,7 +59,7 @@ if [ -z "$ATTRIBUTES" ]; then
 fi
 
 for ATTRIBUTE in $ATTRIBUTES; do
-  grep $ATTRIBUTE $CACHED
+  grep "$ATTRIBUTE\." $CACHED
 done
 
 exit 0
