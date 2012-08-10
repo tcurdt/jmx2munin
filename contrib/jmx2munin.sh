@@ -23,6 +23,8 @@ if [ -z "$url" ]; then
   url="service:jmx:rmi:///jndi/rmi://127.0.0.1:7199/jmxrmi"
 fi
 
+[ -z "$config" ] && config="${0#*_}"
+
 if [ -z "$config" -o -z "$query" -o -z "$url" ]; then
   echo "Configuration needs attributes config, query and optinally url"
   exit 1
