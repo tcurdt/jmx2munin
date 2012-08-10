@@ -37,8 +37,7 @@ if [ "$1" = "config" ]; then
 fi
 
 JAR="$JMX2MUNIN_DIR/jmx2munin.jar"
-URLSUM=`echo -n "$url" | cksum | cut -d ' ' -f 1`
-CACHED="/tmp/jmx2munin.$URLSUM"
+CACHED="${MUNIN_STATEFILE}"
 
 if test ! -f $CACHED || test `find "$CACHED" -mmin +2`; then
 
