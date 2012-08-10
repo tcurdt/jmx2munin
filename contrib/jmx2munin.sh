@@ -36,7 +36,7 @@ if [ "$1" = "config" ]; then
     exit 0
 fi
 
-JAR="$JMX2MUNIN_DIR/jmx2munin.jar"
+JAR="$MUNIN_LIBDIR/jmx2munin.jar"
 CACHED="${MUNIN_STATEFILE}"
 
 if test ! -f $CACHED || test `find "$CACHED" -mmin +2`; then
