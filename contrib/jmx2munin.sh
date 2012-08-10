@@ -23,6 +23,8 @@ if [ -z "$url" ]; then
   url="service:jmx:rmi:///jndi/rmi://127.0.0.1:7199/jmxrmi"
 fi
 
+[ -z "$config" ] && config="${0#*_}"
+
 if [ -z "$config" -o -z "$query" -o -z "$url" ]; then
   echo "Configuration needs attributes config, query and optinally url"
   exit 1
@@ -36,9 +38,8 @@ if [ "$1" = "config" ]; then
     exit 0
 fi
 
-JAR="$JMX2MUNIN_DIR/jmx2munin.jar"
-URLSUM=`echo -n "$url" | cksum | cut -d ' ' -f 1`
-CACHED="/tmp/jmx2munin.$URLSUM"
+JAR="$MUNIN_LIBDIR/jmx2munin.jar"
+CACHED="${MUNIN_STATEFILE}"
 
 if test ! -f $CACHED || test `find "$CACHED" -mmin +2`; then
 
