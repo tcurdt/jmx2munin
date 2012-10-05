@@ -20,13 +20,12 @@ import javax.management.remote.JMXServiceURL;
 
 public final class Query {
 
-    public void run(String url, String expression, Filter filter, Output output) throws IOException, MalformedObjectNameException, InstanceNotFoundException, ReflectionException, IntrospectionException, AttributeNotFoundException, MBeanException {
+    public void run(Server server, String expression, Filter filter, Output output) throws IOException, MalformedObjectNameException, InstanceNotFoundException, ReflectionException, IntrospectionException, AttributeNotFoundException, MBeanException {
         JMXConnector connector = null;
         try {
-            connector = JMXConnectorFactory.connect(new JMXServiceURL(url));
-            MBeanServerConnection connection = connector.getMBeanServerConnection();
+            connector = JMXConnectorFactory.connect(new JMXServiceURL(server.getUrl()), server.getCredentials());  
+            MBeanServerConnection connection = connector.getMBeanServerConnection();            
             final Collection<ObjectInstance> mbeans = connection.queryMBeans(new ObjectName(expression), null);
-
             for(ObjectInstance mbean : mbeans) {
                 final ObjectName mbeanName = mbean.getObjectName();
                 final MBeanInfo mbeanInfo = connection.getMBeanInfo(mbeanName);

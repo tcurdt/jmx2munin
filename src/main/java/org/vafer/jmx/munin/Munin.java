@@ -16,6 +16,12 @@ public final class Munin {
 
     @Parameter(names = "-url", description = "jmx url", required = true)
     private String url;
+    
+    @Parameter(names = "-username", description = "jmx username")
+    private String username;
+    
+    @Parameter(names = "-password", description = "jmx password")
+    private String password;
 
     @Parameter(names = "-query", description = "query expression", required = true)
     private List<String> queries = new ArrayList<String>();
@@ -45,9 +51,11 @@ public final class Munin {
         } else {
             output = new MuninOutput(enums);
         }
+        
+        final Server connection = new Server(url, username, password);
 
         for(String query : queries) {
-            new Query().run(url, query, filter, output);
+            new Query().run(connection, query, filter, output);
         }
     }
 
